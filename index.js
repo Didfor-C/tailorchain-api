@@ -2,74 +2,41 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
-const uri = process.env.MONGODB_URI;
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true
-  }
+const userRoutes = require('./routes/userRoutes');
+// const coinRoutes = require('./routes/coinRoutes');
+// const cardRoutes = require('./routes/cardRoutes');
+// const communityRoutes = require('./routes/communityRoutes');
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+app.use(express.static('public')); // public 폴더 내 정적 파일
+
+// 라우팅
+app.use('/user', userRoutes);         // /user/signup, /user/login, ...
+// app.use('/coin', coinRoutes);         // /coin/:userId/watch-ad, /coin/:userId/purchase
+// app.use('/card', cardRoutes);         // /card/:userId/cat, ...
+// app.use('/community', communityRoutes); // /community/news, ...
+
+// 서버 상태 확인용
+app.get('/', (req, res) => {
+  res.send('TailorChain API Running with JWT Auth');
 });
 
-async function main() {
-  await client.connect();
-  const db = client.db('nf-cat');      // 원하는 DB 이름
-  const users = db.collection('users'); // 원하는 콜렉션 이름
+// 404 처리
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
+});
 
-  const app = express();
-  app.use(cors());
-  app.use(express.json());
+// 에러 처리 미들웨어 (500)
+app.use((err, req, res, next) => {
+  // console.error(err.stack); // 로그 남기기 <-- 서버비를 위해 주석처리
+  res.status(500).sendFile(path.join(__dirname, 'public', '500.html'));
+});
 
-  // 회원가입 예시 (비밀번호 해시 없이 단순 저장)
-  app.post('/signup', async (req, res) => {
-    try {
-      const { email, password } = req.body;
-      if (!email || !password) {
-        return res.status(400).json({ error: 'Email and password required' });
-      }
-
-      const exist = await users.findOne({ email });
-      if (exist) {
-        return res.status(400).json({ error: 'User already exists' });
-      }
-
-      const result = await users.insertOne({ email, password });
-      return res.json({ _id: result.insertedId, email });
-    } catch (err) {
-      return res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 로그인 예시 (단순 이메일/비번 검사)
-  app.post('/login', async (req, res) => {
-    try {
-      const { email, password } = req.body;
-      if (!email || !password) {
-        return res.status(400).json({ error: 'Email and password required' });
-      }
-
-      const user = await users.findOne({ email, password });
-      if (!user) {
-        return res.status(400).json({ error: 'Invalid credentials' });
-      }
-      return res.json({ _id: user._id, email: user.email });
-    } catch (err) {
-      return res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 연결 확인
-  app.get('/', (req, res) => {
-    res.send('Mongo Login Server Running');
-  });
-
-  // 서버 실행
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
-}
-
-main().catch(console.error);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});

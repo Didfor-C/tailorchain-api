@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NF Cat API 문서</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        header {
+            background-color: #ffd1dc;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h2 {
+            color: #ff6f61;
+            border-bottom: 2px solid #ff6f61;
+            padding-bottom: 5px;
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+
+        .endpoint {
+            background-color: #f3f3f3;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        code {
+            background-color: #e8e8e8;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .copy-btn {
+            display: inline-block;
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .copy-btn:hover {
+            background-color: #e05550;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+    <script>
+        function copyToClipboard(code) {
+            navigator.clipboard.writeText(code).then(() => {
+                alert('코드가 복사되었습니다!');
+            }).catch(err => {
+                alert('복사 중 오류가 발생했습니다: ' + err);
+            });
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>🐾 NF Cat API 문서 🐾</h1>
+        <p>백엔드 API를 React + TypeScript 프론트엔드에서 쉽게 사용할 수 있도록 작성된 설명서입니다!</p>
+    </header>
+
+    <main>
+        <section>
+            <h2>소개</h2>
+            <p>이 문서는 <strong>NF Cat API</strong>의 엔드포인트를 설명하고, 프론트엔드에서 바로 사용할 수 있는 코드를 제공합니다. 복사하기 버튼을 눌러 쉽게 활용하세요!</p>
+        </section>
+
+        <section>
+            <h2>엔드포인트</h2>
+
+            <h3>1. 회원가입</h3>
+            <div class="endpoint">
+                <p><strong>URL:</strong> <code>POST /user/signup</code></p>
+                <p><strong>설명:</strong> 새로운 유저 계정을 생성합니다.</p>
+                <p><strong>Request Body:</strong></p>
+                <pre>{
+  "email": "string",
+  "password": "string"
+}</pre>
+                <p><strong>Response:</strong> 생성된 유저 정보와 토큰이 포함된 JSON 객체</p>
+                <button class="copy-btn" onclick="copyToClipboard(`
+const response = await fetch('http://localhost:3000/user/signup', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        email: 'example@example.com',
+        password: 'password123',
+    }),
+});
+const data = await response.json();
+console.log(data);
+`)">코드 복사</button>
+            </div>
+
+            <h3>2. 로그인</h3>
+            <div class="endpoint">
+                <p><strong>URL:</strong> <code>POST /user/login</code></p>
+                <p><strong>설명:</strong> 유저를 인증하고 토큰을 반환합니다.</p>
+                <p><strong>Request Body:</strong></p>
+                <pre>{
+  "email": "string",
+  "password": "string"
+}</pre>
+                <p><strong>Response:</strong> 유저 정보와 토큰이 포함된 JSON 객체</p>
+                <button class="copy-btn" onclick="copyToClipboard(`
+const response = await fetch('http://localhost:3000/user/login', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        email: 'example@example.com',
+        password: 'password123',
+    }),
+});
+
+const data = await response.json();
+console.log(data);
+`)">코드 복사</button>
+            </div>
+
+            <h3>3. 유저 정보 조회</h3>
+            <div class="endpoint">
+                <p><strong>URL:</strong> <code>GET /user/:userId</code></p>
+                <p><strong>설명:</strong> 특정 유저의 정보를 가져옵니다.</p>
+                <p><strong>Headers:</strong></p>
+                <pre>Authorization: Bearer [token]</pre>
+                <p><strong>Response:</strong> 유저 정보가 포함된 JSON 객체</p>
+                <button class="copy-btn" onclick="copyToClipboard(`
+const response = await fetch('http://localhost:3000/user/1', {
+    method: 'GET',
+    headers: {
+        'Authorization': 'Bearer YOUR_TOKEN_HERE',
+    },
+});
+const data = await response.json();
+console.log(data);
+`)">코드 복사</button>
+            </div>
+
+            <h3>4. 유저 정보 수정</h3>
+            <div class="endpoint">
+                <p><strong>URL:</strong> <code>PUT /user/:userId</code></p>
+                <p><strong>설명:</strong> 특정 유저의 정보를 수정합니다.</p>
+                <p><strong>Headers:</strong></p>
+                <pre>Authorization: Bearer [token]</pre>
+                <p><strong>Request Body:</strong></p>
+                <pre>{
+  "userName": "string",
+  "profileImage": "string",
+  "darkMode": true,
+  "pushNotification": true
+}</pre>
+                <p><strong>Response:</strong> 수정된 유저 정보가 포함된 JSON 객체</p>
+                <button class="copy-btn" onclick="copyToClipboard(`
+const response = await fetch('http://localhost:3000/user/1', {
+    method: 'PUT',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer YOUR_TOKEN_HERE',
+    },
+    body: JSON.stringify({
+        userName: '냥집사1',
+        profileImage: '/images/newProfile.png',
+        darkMode: false,
+        pushNotification: true,
+    }),
+});
+const data = await response.json();
+console.log(data);
+`)">코드 복사</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>팁</h2>
+            <ul>
+                <li>모든 인증이 필요한 요청에는 <code>Authorization</code> 헤더를 포함하세요.</li>
+                <li>프론트엔드에서 유저 입력 값을 검증하여 불필요한 에러를 방지하세요.</li>
+                <li>토큰은 로컬 스토리지 또는 쿠키에 안전하게 저장하세요.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>✨ 프론트엔드에게 제공하는 원래 귀엽게 태어난 API 문서. [찡긋] ✨</p>
+    </footer>
+</body>
+</html>
