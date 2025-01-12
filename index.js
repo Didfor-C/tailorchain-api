@@ -20,10 +20,10 @@ app.use('/user', userRoutes);         // /user/signup, /user/login, ...
 // app.use('/card', cardRoutes);         // /card/:userId/cat, ...
 // app.use('/community', communityRoutes); // /community/news, ...
 
-// 서버 상태 확인용
-app.get('/', (req, res) => {
-  res.send('TailorChain API Running with JWT Auth');
-});
+// // 서버 상태 확인용
+// app.get('/', (req, res) => {
+//   res.send('TailorChain API Running with JWT Auth');
+// });
 
 // 404 처리
 app.use((req, res) => {
