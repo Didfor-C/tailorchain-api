@@ -2,6 +2,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 const userRoutes = require('./routes/userRoutes');
 // const coinRoutes = require('./routes/coinRoutes');
@@ -32,7 +33,11 @@ app.use((req, res) => {
 
 // 에러 처리 미들웨어 (500)
 app.use((err, req, res, next) => {
-  // console.error(err.stack); // 로그 남기기 <-- 서버비를 위해 주석처리
+  if (res.headersSent) {
+    // 이미 응답 헤더가 전송된 경우, 기본 Express 에러 핸들러로 넘김
+    return next(err);
+  }
+  // console.error(err.stack); // 로그 남기기 <-- 서버 비용울 아끼기 위해 주석처리
   res.status(500).sendFile(path.join(__dirname, 'public', '500.html'));
 });
 
