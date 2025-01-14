@@ -15,7 +15,7 @@ async function connectDB() {
   if (!client.topology || !client.topology.isConnected()) {
     await client.connect();
   }
-  return client.db('nf-cat'); // 원하는 DB명
+  return client.db('nf-cat'); // 임시 DB명
 }
 
 module.exports = { connectDB };

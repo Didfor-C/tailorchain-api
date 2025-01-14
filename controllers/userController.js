@@ -10,7 +10,17 @@ const {
 } = require('../models/userModel');
 
 let userCount = 0; 
-// 실제로는 DB에서 count(*) 혹은 userId 중 가장 큰 값 + 1 을 가져와 세팅할 수도 있음.
+// 서버 시작 시 데이터베이스에서 userCount 로드
+async function initializeUserCount() {
+  const { connectDB } = require('../config/db');
+  const db = await connectDB();
+  const result = await db.collection('users').find().sort({ userId: -1 }).limit(1).toArray();
+  userCount = result.length > 0 ? result[0].userId : 0;
+  console.log("Initialized userCount:", userCount);
+}
+
+// 서버 초기화 시 호출
+initializeUserCount();
 
 // 회원가입 (비밀번호 해싱)
 async function signup(req, res) {
@@ -131,6 +141,8 @@ async function updateUserInfo(req, res) {
     const { userId } = req.params;
     const updateData = req.body;
     
+    console.log(updateData);
+
     // 비밀번호를 변경하는 경우 해싱 로직 추가
     if (updateData.password) {
       const salt = await bcrypt.genSalt(10);
@@ -156,3 +168,4 @@ module.exports = {
   getUserInfo,
   updateUserInfo,
 };
+
